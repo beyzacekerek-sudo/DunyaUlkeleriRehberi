@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
+
+body {
+    background-color: #0f1923;
+    background-image: linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    color: white;
+    overflow: hidden;
+}
+
+.hud-ust { position: absolute; top: 20px; left: 30px; z-index: 100; pointer-events: none; }
+.sistem-yazisi { color: #ff4655; font-size: 0.9rem; letter-spacing: 3px; font-weight: bold; }
+.hud-ust h1 { font-size: 2.2rem; color: #ece8e1; margin-top: 5px; }
+
+/* KITA SEÇİM EKRANI */
+.kita-menu {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 25, 35, 0.92); backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000;
+}
+.kita-menu h2 { font-size: 2.5rem; color: #00ffff; margin-bottom: 30px; letter-spacing: 2px; }
+.kita-butonlar { display: flex; gap: 20px; }
+.kita-butonlar button {
+    background: transparent; border: 2px solid #00ffff; color: #00ffff;
+    padding: 15px 30px; font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0,255,255,0.2);
+}
+.kita-butonlar button:hover { background: #00ffff; color: #0f1923; box-shadow: 0 0 25px #00ffff; transform: scale(1.05); }
+
+/* GERİ DÖN BUTONU */
+.geri-btn {
+    position: absolute; top: 30px; right: 30px; background: transparent; border: 2px solid #ff4655;
+    color: #ff4655; padding: 10px 20px; font-size: 1rem; font-weight: bold; cursor: pointer; z-index: 1500;
+    display: none; transition: 0.3s;
+}
+.geri-btn:hover { background: #ff4655; color: white; }
+
+/* HARİTA */
+#parallax-kapsayici { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+.harita-alani { position: relative; width: 1400px; height: 700px; }
+.dunya-resmi { width: 100%; height: 100%; filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.3)) opacity(0.6); }
+
+/* RADAR PİNLERİ */
+.radar-pini { position: absolute; cursor: pointer; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); z-index: 100; }
+.nabiz { width: 14px; height: 14px; background: #ff4655; border-radius: 50%; position: relative; box-shadow: 0 0 10px #ff4655; }
+.nabiz::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; border: 2px solid #ff4655; border-radius: 50%; animation: radarPulse 1.5s infinite ease-out; }
+@keyframes radarPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+.pin-kod { margin-top: 8px; font-size: 0.75rem; background: rgba(15, 25, 35, 0.9); border: 1px solid #ff4655; color: #ff4655; padding: 2px 6px; white-space: nowrap; }
+
+/* SAĞDAN KAYAN PANEL VE ETKİLEŞİMLİ BUTONLAR */
+.veri-paneli {
+    position: fixed; top: 0; right: -500px; width: 420px; height: 100vh;
+    background: rgba(15, 25, 35, 0.98); border-left: 3px solid #00ffff;
+    backdrop-filter: blur(10px); padding: 40px; transition: right 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.8); z-index: 2500; overflow-y: auto;
+}
+.kapat-btn { display: block; text-align: right; color: #ff4655; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
+.panel-bayrak { width: 100%; border: 2px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+.panel-icerik h2 { font-size: 2rem; color: #ece8e1; margin-bottom: 15px; border-bottom: 1px solid rgba(0,255,255,0.3); padding-bottom: 8px; }
+.ozellik-satiri { font-size: 1.1rem; margin-bottom: 12px; background: rgba(255,255,255,0.05); padding: 10px; border-left: 3px solid #ff4655; }
+.ozellik-satiri span { color: #00ffff; font-weight: bold; margin-right: 10px; }
+
+/* PANEL İÇİ GİZLİ DETAY VE BUTONLAR (İstediğin Özellik) */
+.etkilesim-btn {
+    width: 100%; background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff;
+    color: #00ffff; padding: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; transition: 0.3s;
+}
+.etkilesim-btn:hover { background: #00ffff; color: #0f1923; }
+
+.gizli-detay {
+    display: none; background: rgba(0, 255, 255, 0.05); border-left: 3px solid #00ffff;
+    padding: 10px; margin-top: 5px; font-size: 1rem; color: #fff;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+.istatistik-alani { margin-top: 25px; }
+.istatistik-baslik { font-size: 0.9rem; color: #ece8e1; margin-bottom: 6px; font-weight: bold; }
+.bar-arkaplan { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+.bar-dolum { height: 100%; background: #00ffff; box-shadow: 0 0 10px #00ffff; }

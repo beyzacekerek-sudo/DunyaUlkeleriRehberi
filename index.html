@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Dünya Rehberi - Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ÜST HUD -->
+    <div class="hud-ust">
+        <div class="sistem-yazisi">KÜRESEL VERİTABANI // AKTİF</div>
+        <h1>DÜNYA ÜLKELERİ REHBERİ</h1>
+    </div>
+
+    <!-- KITA SEÇİM MENÜSÜ (Ülkelerin açılmama sorununu tamamen çözen akıllı sistem) -->
+    <div id="kita-menu" class="kita-menu">
+        <h2>BİR KITA SEÇİN</h2>
+        <div class="kita-butonlar">
+            <button onclick="kitaSec('avrupa')">🇪🇺 Avrupa</button>
+            <button onclick="kitaSec('asya')">🌏 Asya</button>
+            <button onclick="kitaSec('amerika')">🌎 Amerika</button>
+            <button onclick="kitaSec('afrika')">🌍 Afrika</button>
+        </div>
+    </div>
+
+    <!-- GERİ DÖN TUŞU -->
+    <button id="geri-btn" class="geri-btn" onclick="anaMenuyeDon()">◄ Kitalara Dön</button>
+
+    <!-- HARİTA VE PARALAKS ALANI -->
+    <div id="parallax-kapsayici">
+        <div class="harita-alani">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg" alt="Dünya" class="dunya-resmi">
+
+            <!-- PİNLER (Başlangıçta gizli, kıta seçilince JavaScript ile açılır) -->
+            <div id="pinler-alani"></div>
+        </div>
+    </div>
+
+    <!-- SAĞDAN AÇILAN DETAY PANELİ -->
+    <div id="veri-paneli" class="veri-paneli">
+        <div class="kapat-btn" onclick="ulkeKapat()">KAPAT [X]</div>
+        <div class="panel-icerik" id="panel-detay"></div>
+    </div>
+
+    <!-- JAVASCRIPT MANTIĞI -->
+    <script>
+        // Tüm Ülke Veritabanı
+        const veriler = {
+            turkiye: { isim: "TÜRKİYE", baskent: "Ankara", birim: "Türk Lirası (TRY)", nufus: "85 Milyon", bayrak: "https://flagcdn.com/w320/tr.png", guc: "78%" },
+            almanya: { isim: "ALMANYA", baskent: "Berlin", birim: "Euro (EUR)", nufus: "84 Milyon", bayrak: "https://flagcdn.com/w320/de.png", guc: "90%" },
+            japonya: { isim: "JAPONYA", baskent: "Tokyo", birim: "Japon Yeni (JPY)", nufus: "125 Milyon", bayrak: "https://flagcdn.com/w320/jp.png", guc: "95%" },
+            guneykore: { isim: "GÜNEY KORE", baskent: "Seul", birim: "Güney Kore Wonu (KRW)", nufus: "51 Milyon", bayrak: "https://flagcdn.com/w320/kr.png", guc: "88%" },
+            abd: { isim: "AMİREKA BİRLEŞİK DEVLETLERİ", baskent: "Washington, D.C.", birim: "Amerikan Doları (USD)", nufus: "333 Milyon", bayrak: "https://flagcdn.com/w320/us.png", guc: "99%" },
+            brezilya: { isim: "BREZİLYA", baskent: "Brasília", birim: "Brezilya Reali (BRL)", nufus: "214 Milyon", bayrak: "https://flagcdn.com/w320/br.png", guc: "70%" },
+            misir: { isim: "MISIR", baskent: "Kahire", birim: "Mısır Lirası (EGP)", nufus: "109 Milyon", bayrak: "https://flagcdn.com/w320/eg.png", guc: "65%" },
+            guneyafrika: { isim: "GÜNEY AFRİKA", baskent: "Pretoria", birim: "Güney Afrika Randı (ZAR)", nufus: "60 Milyon", bayrak: "https://flagcdn.com/w320/za.png", guc: "68%" }
+        };
+
+        // Kıtalara Göre Pin Dağılımı
+        const kitaPinleri = {
+            avrupa: [
+                { key: 'turkiye', ad: 'TÜRKİYE', top: '55%', left: '57%' },
+                { key: 'almanya', ad: 'ALMANYA', top: '35%', left: '51%' }
+            ],
+            asya: [
+                { key: 'japonya', ad: 'JAPONYA', top: '45%', left: '88%' },
+                { key: 'guneykore', ad: 'GÜNEY KORE', top: '48%', left: '82%' }
+            ],
+            amerika: [
+                { key: 'abd', ad: 'ABD', top: '40%', left: '20%' },
+                { key: 'brezilya', ad: 'BREZİLYA', top: '75%', left: '32%' }
+            ],
+            afrika: [
+                { key: 'misir', ad: 'MISIR', top: '55%', left: '55%' },
+                { key: 'guneyafrika', ad: 'GÜNEY AFRİKA', top: '82%', left: '60%' }
+            ]
+        };
+
+        // Kıta Seçme Fonksiyonu (Hata İhtimallerini Sıfırlar)
+        function kitaSec(kitaAdi) {
+            document.getElementById("kita-menu").style.display = "none";
+            document.getElementById("geri-btn").style.display = "block";
+            
+            const pinlerAlani = document.getElementById("pinler-alani");
+            pinlerAlani.innerHTML = ""; // Önceki pinleri temizle
+
+            const secilenler = kitaPinleri[kitaAdi];
+            secilenler.forEach(p => {
+                const div = document.createElement("div");
+                div.className = "radar-pini";
+                div.style.top = p.top;
+                div.style.left = p.left;
+                div.innerHTML = `<div class="nabiz"></div><span class="pin-kod">${p.ad}</span>`;
+                div.onclick = () => ulkeAc(p.key);
+                pinlerAlani.appendChild(div);
+            });
+        }
+
+        // Ana Menüye Dönüş
+        function anaMenuyeDon() {
+            document.getElementById("kita-menu").style.display = "flex";
+            document.getElementById("geri-btn").style.display = "none";
+            document.getElementById("pinler-alani").innerHTML = "";
+            ulkeKapat();
+        }
+
+        // Ülke Paneli Açma (Başkent ve Para Birimi Başlangıçta GİZLİ)
+        function ulkeAc(key) {
+            const v = veriler[key];
+            const panel = document.getElementById("veri-paneli");
+            const detay = document.getElementById("panel-detay");
+
+            detay.innerHTML = `
+                <img src="${v.bayrak}" class="panel-bayrak">
+                <h2>${v.isim}</h2>
+                <div class="ozellik-satiri"><span>NÜFUS:</span> ${v.nufus}</div>
+                
+                <!-- Başkent Butonu ve Gizli Alan -->
+                <button class="etkilesim-btn" onclick="detayAc('baskent-${key}')">🏛 Başkenti Göster</button>
+                <div id="baskent-${key}" class="gizli-detay">Başkent: <b>${v.baskent}</b></div>
+
+                <!-- Para Birimi Butonu ve Gizli Alan -->
+                <button class="etkilesim-btn" onclick="detayAc('para-${key}')">💰 Para Birimini Göster</button>
+                <div id="para-${key}" class="gizli-detay">Para Birimi: <b>${v.birim}</b></div>
+
+                <div class="istatistik-alani">
+                    <div class="istatistik-baslik">GÜÇ ENDEKSİ</div>
+                    <div class="bar-arkaplan"><div class="bar-dolum" style="width: ${v.guc};"></div></div>
+                </div>
+            `;
+            panel.style.right = "0";
+        }
+
+        // Tıklandıkça Ayrıntıları Açma Fonksiyonu
+        function detayAc(id) {
+            const element = document.getElementById(id);
+            element.style.display = "block";
+            element.style.animation = "fadeIn 0.5s ease";
+        }
+
+        function ulkeKapat() {
+            document.getElementById("veri-paneli").style.right = "-500px";
+        }
+
+        // Fare ile harita kaydırma
+        document.addEventListener("mousemove", (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 45;
+            const y = (window.innerHeight / 2 - e.pageY) / 45;
+            document.getElementById("parallax-kapsayici").style.transform = `translate(${x}px, ${y}px)`;
+        });
+    </script>
+</body>
+</html>
